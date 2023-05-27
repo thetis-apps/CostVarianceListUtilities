@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Thetis Apps Aps
+ * Copyright 2023 Thetis Apps Aps
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,11 +72,19 @@ exports.costVarianceListHandler = async (event, x) => {
     let dataDocument = JSON.parse(context.dataDocument);
     let setup = dataDocument.CostVarianceListUtilities;
     
-    if (setup.changeStandardCostPrice) {
+    if (setup.setStandardCostPriceToActualCostPrice) {
         
-        response = await ims.get('inboundShipment/' + detail.inboundShipmentId);
+        response = await ims.get('inboundShipments/' + detail.inboundShipmentId);
         let inboundShipment = response.data;
     
+        for (let line of inboundShipment.inboundShipmentLines) {
+            
+            console.log("Line " + line.id);
+            
+            if (line.actualCostPrice != line.standardCostPrice) {
+                response = await ims.patch('globalTradeItems/' + line.globalTradeItemId, { standardCostPrice: line.actualCostPrice });
+            }
+        }
         
     }
 

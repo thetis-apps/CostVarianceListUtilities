@@ -1,10 +1,10 @@
 # Introduction
 
-This application offers functions that may run automatically every time a order proposal is created.
+This application offers functions that may run automatically every time a cost variance list is created.
 
 # Installation
 
-You install the application from the connection view in Thetis IMS. The name of the application is 'thetis-ims-order-proposal-utilities'.
+You install the application from the connection view in Thetis IMS. The name of the application is 'thetis-ims-cost-variance-list-utilities'.
 
 # Configuration
 
@@ -12,16 +12,15 @@ In the data document of the context:
 
 ```
 {
-  "OrderProposalUtilities": {
-    "createInboundShipment": true
+  "CostVarianceListUtilities": {
+    "setStandardCostPriceToActualCostPrice": true
   }
 }
 ```
 # Options
 
-#### createInboundShipment
+#### setStandardCostPriceToActualCostPrice
 
-If this field is true, the application will automatically create one or more inbound shipments every time a new order proposal is created.
+If this field is true, the application will automatically set the standard cost price of all items present on the inbound shipment for which the cost variance list was made. The application sets the standard cost price of each trade item to the actual cost price of that trade item on this inbound shipment.
 
-The application makes one inbound shipment for each future supplier represented in the order proposal. The latest supplier of an item is considered the future supplier. If an item has never before been purchased, it is not included in any inbound shipment.
 
