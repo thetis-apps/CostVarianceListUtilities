@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: '
 
-  Application for triggering functions when order proposal is created.
+  Application for triggering functions when cost variance list is created.
 
   '
 Metadata:
@@ -16,7 +16,7 @@ Metadata:
     Labels:
     - thetis-ims
     HomePageUrl: https://github.com/thetis-apps/CostVarianceListUtilities
-    SemanticVersion: 1.0.1
+    SemanticVersion: 1.0.4
     SourceCodeUrl: https://github.com/thetis-apps/CostVarianceListUtilities
 Parameters:
   ContextId:
@@ -79,7 +79,7 @@ Resources:
           Fn::GetAtt:
           - DeadLetterQueue
           - Arn
-      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-1q52gionhjeg3/113f861c17cd7ec10bc4d169367d792b
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-1q52gionhjeg3/dbf711e9a10326bcd3d902c0a6b3744f
     Metadata:
       SamResourceId: OrderProposalHandler
   DeadLetterQueue:
@@ -88,37 +88,3 @@ Resources:
       KmsMasterKeyId: alias/aws/sqs
     Metadata:
       SamResourceId: DeadLetterQueue
-  Alarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmDescription: Alarm when any message is moved to the dead letter queue.
-      AlarmActions:
-      - Ref: IncidentTopic
-      ComparisonOperator: GreaterThanThreshold
-      EvaluationPeriods: 1
-      MetricName: ApproximateNumberOfMessagesVisible
-      Period: 60
-      Namespace: AWS/SQS
-      Threshold: '0'
-      Unit: Count
-      Dimensions:
-      - Name: QueueName
-        Value:
-          Fn::GetAtt:
-          - DeadLetterQueue
-          - QueueName
-      TreatMissingData: notBreaching
-      Statistic: Maximum
-    Metadata:
-      SamResourceId: Alarm
-  IncidentTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      KmsMasterKeyId: alias/aws/sns
-      Subscription:
-      - Endpoint:
-          Ref: DevOpsEmail
-        Protocol: email
-      DisplayName: Incidents to be handled by Thetis Devops.
-    Metadata:
-      SamResourceId: IncidentTopic
